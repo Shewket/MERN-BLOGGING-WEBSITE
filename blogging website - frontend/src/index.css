@@ -26,6 +26,7 @@
         @apply py-4 px-[5vw] md:px-[7vw] lg:px-[10vw];
     }
 
+
     ::selection {
         @apply bg-purple/30;
     }
@@ -113,6 +114,7 @@
     .blog-index{
         @apply text-4xl sm:text-3xl lg:text-5xl font-bold text-grey leading-none;
     }
+    
 }
 
 .ce-block__content, .ce-toolbar__content{
@@ -123,4 +125,9 @@
 .cdx-settings-button[data-tune='withBackground'],
 .cdx-settings-button[data-tune='stretched'] {
   display: none;
+}
+
+input::-ms-reveal,
+input::-ms-clear {
+    display: none;
 }
