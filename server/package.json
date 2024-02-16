@@ -11,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@descope/node-sdk": "^1.6.3",
+    "@descope/react-sdk": "^2.0.6",
     "aws-sdk": "^2.1432.0",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",

@@ -1,17 +1,31 @@
 import AnimationWrapper from "../common/page-animation";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../App";
 import { removeFromSession } from "../common/session";
+import { useUser, useDescope } from '@descope/react-sdk';
 
 const UserNavigationPanel = () => {
 
     const { userAuth: {username}, setUserAuth } = useContext(UserContext);
 
+    const userDetail = useUser();
+    const navigate = useNavigate();
+
+    const {logout} = useDescope();
+    
+    console.log(userDetail);
+
     const signOutUser = () => {
         removeFromSession("user");
         setUserAuth({access_token: null});
+        logout().then(() => {
+            removeFromSession("user");
+            navigate('/')
+        })
     }
+
+    
 
     return (
         <AnimationWrapper
@@ -45,7 +59,7 @@ const UserNavigationPanel = () => {
                         onClick={signOutUser}
                 >
                     <h1 className="font-bold text-xl mg-1">Sign Out</h1>
-                    <p className="text-dark-grey">@{username}</p>
+                    <p className="text-dark-grey">@{username || userDetail?.user?.name}</p>
                 </button>
 
             </div>

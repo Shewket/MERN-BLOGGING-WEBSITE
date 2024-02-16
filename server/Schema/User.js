@@ -19,6 +19,7 @@ const userSchema = mongoose.Schema({
             unique: true
         },
         password: String,
+        twoFA: Boolean,
         username: {
             type: String,
             minlength: [3, 'Username must be 3 letters long'],
@@ -73,6 +74,10 @@ const userSchema = mongoose.Schema({
         },
     },
     google_auth: {
+        type: Boolean,
+        default: false
+    },
+    microsoft_auth: {
         type: Boolean,
         default: false
     },

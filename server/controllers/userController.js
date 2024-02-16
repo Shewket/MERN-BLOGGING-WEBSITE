@@ -5,8 +5,12 @@ import jwt from 'jsonwebtoken';
 
 import User from '../Schema/User.js';
 
+import DescopeClient from '@descope/node-sdk';
+
 let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // regex for email
 let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; // regex for password
+
+const descopeClient = DescopeClient({ projectId: 'P2cOmoK2Ld8t44tVNyF24192Eip4' });
 
 
 const formatDatatoSend = (user) => {
@@ -84,19 +88,27 @@ const signInUser = (req, res) => {
             return res.status(403).json({"error": "Email not found"});
         }
         
-        bcrypt.compare(password, user.personal_info.password, (err, result) => {
 
-            if (err) {
-                return res.status(403).json({"error": "Email occured while login. Please try again"});
-            }
+        if(!user.microsoft_auth){
 
-            if(!result){
-                return res.status(403).json({"error": "Incorrect password"})
-            } else{
-                return res.status(200).json(formatDatatoSend(user));
-            }
+            bcrypt.compare(password, user.personal_info.password, (err, result) => {
 
-        })
+                if (err) {
+                    return res.status(403).json({"error": "Email occured while login. Please try again"});
+                }
+    
+                if(!result){
+                    return res.status(403).json({"error": "Incorrect password"})
+                } else{
+                    return res.status(200).json(formatDatatoSend(user));
+                }
+    
+            })
+
+        } else {
+            return res.status(403).json({"error": "Account was created using microsoft. Try logging in with microsoft."})
+        }
+    
     })
     .catch(err => {
         console.log(err.message);
@@ -105,4 +117,48 @@ const signInUser = (req, res) => {
 
 }
 
-export {signupUser, signInUser}
+const microsoftAuth = async (req, res) => {
+
+    let {email, access_token, fullname} = req.body;
+
+    let user = await User.findOne({"personal_info.email": email}).select("personal_info.fullname personal_info.username personal_info.profile_img microsoft_auth").then( (u) => {
+        return u || null;
+    })
+    .catch(err => {
+        return res.status(500).json({"error": err.message});
+    }) 
+
+
+    if(user){
+
+        if(user.microsoft_auth){
+            return res.status(403).json({"error": "This email was signed up without microsoft. Please log in with password to access the account"});
+        }
+
+    }
+    else{
+
+        let username = fullname.split(" ")[0];
+        
+        user = new User({
+            personal_info: {fullname, email, username},
+            microsoft_auth: true
+        })
+
+        await user.save().then( (u) => {
+            user = u;
+        })
+        .catch(err => {
+            return res.status(500).json({"error": err.message});
+        })
+
+    }
+
+    return res.status(200).json(formatDatatoSend(user))
+
+}
+
+
+
+
+export {signupUser, signInUser, microsoftAuth}

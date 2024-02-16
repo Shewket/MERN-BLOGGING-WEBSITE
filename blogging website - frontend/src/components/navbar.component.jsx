@@ -3,6 +3,7 @@ import {Link, Outlet} from 'react-router-dom';
 import logo from "../imgs/logo2.png"
 import {UserContext} from "../App.jsx"
 import UserNavigationPanel from './user-navigation.component';
+import { useUser } from '@descope/react-sdk';
 
 const Navbar = () => {
 
@@ -10,6 +11,10 @@ const Navbar = () => {
     const  [ userNavPanel, setUserNavPanel ] = useState(false);
 
     const {userAuth, userAuth: {access_token, profile_img}} = useContext(UserContext);
+
+    const userDetail = useUser();
+
+    // console.log(userDetail.user.OAuth);
 
 
     const handleUserNavPanel = () => {
@@ -47,12 +52,12 @@ const Navbar = () => {
                     </button>
 
                     <Link to="/editor" className="hidden md:flex gap-2 link">
-                        <i class="fi fi-rr-file-edit"></i>
+                        <i className="fi fi-rr-file-edit"></i>
                         <p>Write</p>
                     </Link>
 
                     {
-                        access_token ?
+                        access_token ||  userDetail?.user?.OAuth ?
                         <>
                             <Link to="/dashboard/notification">
                                 <button className='w-12 h-12 rounded-full bg-grey relative hover:bg-black/10'>
@@ -68,7 +73,7 @@ const Navbar = () => {
 
 
                                 {
-                                    userNavPanel ? <UserNavigationPanel /> 
+                                    userNavPanel  ? <UserNavigationPanel /> 
                                     : ""
                                 }
 

@@ -1,17 +1,24 @@
 import InputBox from "../components/input.component";
-import uowIcon from "../imgs/logo-flowers.png"
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import AnimationWrapper from "../common/page-animation"
 import { useContext, useRef } from "react";
 import {Toaster, toast} from 'react-hot-toast';
 import axios from "axios";
 import { storeInSession } from "../common/session";
 import { UserContext } from "../App";
+import { AuthProvider, Descope } from "@descope/react-sdk";
+import { useUser, useDescope } from '@descope/react-sdk';
+
 
 
 const UserAuthForm = ( {type} ) => {  
     
     let {userAuth: {access_token}, setUserAuth} = useContext(UserContext)
+
+    const navigate = useNavigate();
+    const userDetail = useUser();
+    
+
 
 
 
@@ -67,7 +74,29 @@ const UserAuthForm = ( {type} ) => {
             return toast.error("Password should be 6 to 20 characters long with a numeric, 1 lowercase and 1 uppercase letters")
         }
 
-        userAuthThroughServer(serverRoute, formData)
+        userAuthThroughServer(serverRoute, formData);
+    }
+
+    const handleMicrosoftAuth = (userDetail) => {
+
+
+        
+        
+        let serverRoute = "/microsoftAuth"
+
+        
+
+        let formData = {
+            "email": userDetail?.detail?.user?.email,
+            "access_token": userDetail?.detail?.user?.userId,
+            "fullname": userDetail?.detail?.user?.name,
+
+        }
+
+        console.log(formData);
+
+
+        userAuthThroughServer(serverRoute, formData);
     }
 
     return (
@@ -75,7 +104,7 @@ const UserAuthForm = ( {type} ) => {
         <Navigate to="/" />
         :
         <AnimationWrapper keyValue={type}>
-            <section className="h-cover flex items-center justify-center">
+            <section className="h-cover flex flex-col items-center justify-center">
                 <Toaster />
                 <form id="formElement" className="w-[80%] max-w-[400px]">
                     <h1 className="text-4xl font-gelasio capitalize text-center mb-24">
@@ -115,16 +144,7 @@ const UserAuthForm = ( {type} ) => {
                         {type.replace("-", " ")}
                     </button>
 
-                    <div className="relative w-full flex items-center gap-2 my-10 opacity-10 uppercase text-black font-bold">
-                        <hr className="w-1/2 border-black"/>
-                        <p>or</p>
-                        <hr className="w-1/2 border-black"/>
-                    </div>
 
-                    <button className="btn-dark flex items-center justify-center gap-4 w-[90%] center">
-                        <img src={uowIcon} className="w-10 rounded-md" />
-                        continue with UOW account
-                    </button>
 
                     {
                         type == "sign-in" ?
@@ -143,6 +163,25 @@ const UserAuthForm = ( {type} ) => {
                         </p>
                     }
                 </form>
+
+                <div className="relative w-full flex items-center gap-2 my-10 opacity-10 uppercase text-black font-bold">
+                    <hr className="w-1/2 border-black"/>
+                    <p>or</p>
+                    <hr className="w-1/2 border-black"/>
+                </div>
+
+                
+                <Descope
+                        flowId="sign-up-or-in"
+                        onSuccess={(userDetail) => {
+                            handleMicrosoftAuth(userDetail);
+                            navigate('/');
+                        }}
+                        onError={(e) => console.log('Could not log in!')}
+                /> 
+
+                
+                 
 
             </section>
         </AnimationWrapper>

@@ -3,11 +3,14 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
 import './index.css'
+import { AuthProvider } from '@descope/react-sdk';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <AuthProvider projectId={import.meta.env.VITE_AUTHENTICATION_DESCOPE_ID}>
+        <App />
+      </AuthProvider>
     </BrowserRouter> 
     
   </React.StrictMode>,
