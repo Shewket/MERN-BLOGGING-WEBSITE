@@ -5,12 +5,10 @@ import jwt from 'jsonwebtoken';
 
 import User from '../Schema/User.js';
 
-import DescopeClient from '@descope/node-sdk';
 
 let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // regex for email
 let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; // regex for password
 
-const descopeClient = DescopeClient({ projectId: 'P2cOmoK2Ld8t44tVNyF24192Eip4' });
 
 
 const formatDatatoSend = (user) => {
