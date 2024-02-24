@@ -15,7 +15,7 @@ import tools from "./tools.component";
 const BlogEditor = () => {
 
 
-    let { blog, blog: { title, banner, content, tags, des}, setBlog, textEditor, setTextEditor} = useContext(EditorContext);
+    let { blog, blog: { title, banner, content, tags, des}, setBlog, textEditor, setTextEditor, setEditorState} = useContext(EditorContext);
 
 
     useEffect( () => {
@@ -78,6 +78,33 @@ const BlogEditor = () => {
 
         img.src = defaultBanner;
     }
+
+    const handlePublishEvent = () => {
+        if(!banner.length){
+            return toast.error('Please upload a blog banner to publish it.');
+        }
+
+        if(!title.length){
+            return toast.error('Please write a title to publish it.');
+        }
+
+        if(textEditor.isReady){
+            textEditor.save().then(data => {
+                console.log(data);
+                if(data.blocks.length){
+                    setBlog({...blog, content: data});
+                    setEditorState("publish");
+                } else {
+                    return toast.error('Please write some content to publish it.');
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+        }
+
+
+    }
     
     return (
         <>
@@ -92,7 +119,8 @@ const BlogEditor = () => {
                 </p>
 
                 <div className="flex gap-4 ml-auto"> 
-                    <button className="btn-dark py-2">
+                    <button className="btn-dark py-2"
+                        onClick={handlePublishEvent}>
                         Publish
                     </button>
                     <button className="btn-light py-2">
