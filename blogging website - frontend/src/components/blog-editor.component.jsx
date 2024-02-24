@@ -3,20 +3,35 @@ import AnimationWrapper from "../common/page-animation";
 import logo from "../imgs/logo1.png"
 import defaultBanner from "../imgs/blog banner.png";
 import uploadImage from "../common/uploadImg";
-import { useContext} from "react";
+import { useContext, useEffect} from "react";
 import { Toaster, toast } from "react-hot-toast";
 import {EditorContext} from "../pages/editor.pages";
+import EditorJS from "@editorjs/editorjs";
+import tools from "./tools.component";
+
+
 
 
 const BlogEditor = () => {
 
 
-    let { blog, blog: { title, banner, content, tags, des}, setBlog} = useContext(EditorContext)
+    let { blog, blog: { title, banner, content, tags, des}, setBlog, textEditor, setTextEditor} = useContext(EditorContext);
 
-    console.log(blog);
+
+    useEffect( () => {
+        setTextEditor(new EditorJS({
+            holder: 'textEditor',
+            data: '',
+            tools: tools,
+            placeholder: 'Start writing here...',
+
+        }));
+
+    }, [])
 
 
     const handleBannerUpload = (img) => {
+
 
 
         if(img){
@@ -24,12 +39,10 @@ const BlogEditor = () => {
             let loadingToast = toast.loading('Uploading...')
 
             
-            uploadImage(img).then(response => {
-                const imageUrlArray = response;
-                console.log(imageUrlArray[0]);
+            uploadImage(img).then(url => {
+            
 
-                if(imageUrlArray[0]) {
-                    const url = import.meta.env.VITE_SERVER_DOMAIN + '/' + imageUrlArray[0]
+                if(url) {
                     toast.dismiss(loadingToast);
                     toast.success('Uploaded 👍')
                     
@@ -68,6 +81,7 @@ const BlogEditor = () => {
     
     return (
         <>
+        
 
             <nav className="navbar">
                 <Link to="/">
@@ -121,6 +135,10 @@ const BlogEditor = () => {
                         />
 
                         <hr className="w-full opacity-10 my-1"/>
+
+                        <div id="textEditor" className="font-gelasio"></div>
+
+
 
 
 
