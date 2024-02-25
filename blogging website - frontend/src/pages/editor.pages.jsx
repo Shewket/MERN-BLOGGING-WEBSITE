@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import { UserContext } from "../App";
 import BlogEditor from "../components/blog-editor.component";
 import PublishForm from "../components/publish-form.component";
+import OCRForm from "../components/ocr-form.component";
 
 const blogStructure = {
     title: '',
@@ -29,7 +30,7 @@ const Editor = () => {
         <EditorContext.Provider value={{blog, setBlog, editorState, setEditorState, textEditor, setTextEditor}}>
             {
                 access_token === null ? <Navigate to="/signin" />
-                : editorState == "editor" ? <BlogEditor /> : <PublishForm />
+                : editorState == "editor" ? <BlogEditor /> : editorState == "publish" ? <PublishForm /> : <OCRForm />
             }
         </EditorContext.Provider>
     )

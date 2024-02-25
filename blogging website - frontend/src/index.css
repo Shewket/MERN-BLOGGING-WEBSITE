@@ -55,6 +55,10 @@
         @apply btn-dark bg-grey text-black;
     }
 
+    .btn-ocr{
+        @apply btn-dark bg-dark-grey;
+    }
+
     .input-box {
         @apply w-[100%] rounded-md p-4 bg-grey pl-12 border border-grey focus:bg-transparent placeholder:text-black;
     }
