@@ -31,26 +31,31 @@ const createBlog = (req, res) => {
     let authorId = req.user;
 
     let {title, des, banner, tags, content, draft} = req.body;
+    
 
     if(!title.length){
         return res.status(403).json({"error": "Title is required."});
     }
 
-    if(!des.length || des.length > DESCRIPTION_LIMIT){
-        return res.status(403).json({"error": "Description is required under 200 characters."});
+    if(!draft){
+        if(!des.length || des.length > DESCRIPTION_LIMIT){
+            return res.status(403).json({"error": "Description is required under 200 characters."});
+        }
+    
+        if(!banner.length){
+            return res.status(403).json({"error": "Banner is required."});
+        }
+    
+        if(!content.blocks.length){
+            return res.status(403).json({"error": "Content is required."});
+        }
+    
+        if(!tags.length || tags.length > TAGS_LIMIT) {
+            return res.status(403).json({"error": "Tags is required, Maxium 10."});
+        }
     }
 
-    if(!banner.length){
-        return res.status(403).json({"error": "Banner is required."});
-    }
-
-    if(!content.blocks.length){
-        return res.status(403).json({"error": "Content is required."});
-    }
-
-    if(!tags.length || tags.length > TAGS_LIMIT) {
-        return res.status(403).json({"error": "Tags is required, Maxium 10."});
-    }
+    
 
     tags = tags.map(tag => tag.toLowerCase());
 
