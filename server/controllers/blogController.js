@@ -1,5 +1,6 @@
 import fs from 'fs';
 import {nanoid} from 'nanoid';
+import { exec, spawn } from 'child_process';
 import Blog from '../Schema/Blog.js';
 import User from '../Schema/User.js';
 
@@ -9,7 +10,7 @@ const TAGS_LIMIT = 10;
 
 const upLoadImages =(req, res)  => {
 
-    console.log(req.files);
+    // console.log(req.files);
 
     const uploadedFiles = [];
 
@@ -24,6 +25,23 @@ const upLoadImages =(req, res)  => {
     }
     res.json(uploadedFiles);
 
+}
+
+const getLatestBlogs = (req, res) => {
+
+    const maxLimit = 2;
+
+    Blog.find({draft: false})
+    .populate("author", "personal_info.profile_img personal_info.username personal_info.fullname -_id")
+    .sort({"publishedAt": -1})
+    .select("blog_id title des banner activity tags publishedAt -_id")
+    .limit(maxLimit)
+    .then(blogs => {
+        return res.status(200).json({blogs});
+    })
+    .catch(err => {
+        return res.status(500).json({"error": err.message });
+    })
 }
 
 const createBlog = (req, res) => {
@@ -82,7 +100,42 @@ const createBlog = (req, res) => {
 
 }
 
+const ocr = (req, res) => {
+
+   let {image, language} = req.body;
+
+//    let pythonProcess = spawn('python', ['./ocr.py', image, language]);
+
+//    let result = [];
+
+//    pythonProcess.stdout.on('data', (data) => {
+//         result += data.toString();
+//    })
+
+//    pythonProcess.stderr.on('data', (data) => {
+//         let output = data.toString();
+        
+//         try {
+//             result = JSON.parse(output);
+//         } catch (error) {
+//             console.error('Error parsing OCR results:', error);
+//         }
+//    })
+
+//    pythonProcess.on('close', (code) => {
+//         if(code !== 0){
+//             console.log(`child process exited with code ${code}`);
+//         }
+//         else{
+//             res.json(result);
+//         }
+       
+//    })
+
+
+}
 
 
 
-export {upLoadImages, createBlog};
+
+export {upLoadImages, getLatestBlogs, createBlog, ocr};
