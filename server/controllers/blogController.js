@@ -4,7 +4,7 @@ import { exec, spawn } from 'child_process';
 import Blog from '../Schema/Blog.js';
 import User from '../Schema/User.js';
 
-const DESCRIPTION_LIMIT = 200;
+const DESCRIPTION_LIMIT = 500;
 const TAGS_LIMIT = 10;
 
 
@@ -42,7 +42,7 @@ const createBlog = (req, res) => {
 
     if(!draft){
         if(!des.length || des.length > DESCRIPTION_LIMIT){
-            return res.status(403).json({"error": "Description is required under 200 characters."});
+            return res.status(403).json({"error": "Description is required under 500 characters."});
         }
     
         if(!banner.length){
@@ -57,8 +57,6 @@ const createBlog = (req, res) => {
             return res.status(403).json({"error": "Tags is required, Maxium 10."});
         }
     }
-
-    
 
     tags = tags.map(tag => tag.toLowerCase());
 
@@ -80,14 +78,14 @@ const createBlog = (req, res) => {
             })
     })
     .catch(err => {
-        return res.status(500).json({error: "Failed to create blog: " + err.message})
+        return res.status(500).json({error: "Failed to create blog: " + err.message  })
     })
 
 }
 
 const getLatestBlogs = (req, res) => {
 
-    const maxLimit = 2;
+    const maxLimit = 5;
 
     Blog.find({draft: false})
     .populate("author", "personal_info.profile_img personal_info.username personal_info.fullname -_id")
@@ -115,6 +113,28 @@ const getTrendingBlogs = (req, res) => {
         return res.status(500).json({ "error": err.message });
     })
     
+}
+
+const getSearchingBlogs = (req, res) => {
+    let {tag} = req.body;
+
+    let findQuery = {tags: tag, draft: false};
+
+    let maxLimit = 5;
+
+    Blog.find(findQuery)
+    .populate("author", "personal_info.profile_img personal_info.username personal_info.fullname -_id")
+    .sort({"publishedAt": -1})
+    .select("blog_id title des banner activity tags publishedAt -_id")
+    .limit(maxLimit)
+    .then(blogs => {
+        return res.status(200).json({blogs});
+    })
+    .catch(err => {
+        return res.status(500).json({"error": err.message });
+    })
+
+
 }
 
 const ocr = (req, res) => {
@@ -155,4 +175,4 @@ const ocr = (req, res) => {
 
 
 
-export {upLoadImages, createBlog, getLatestBlogs, getTrendingBlogs, ocr};
+export {upLoadImages, createBlog, getLatestBlogs, getTrendingBlogs, getSearchingBlogs, ocr};

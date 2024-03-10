@@ -25,7 +25,8 @@ const BlogEditor = () => {
 
 
     useEffect( () => {
-        if(!textEditor.isReady){
+        console.log(textEditor.isReady)
+        // if(!textEditor.isReady){
             setTextEditor(new EditorJS({
                 holder: 'textEditor',
                 data: content,
@@ -33,7 +34,7 @@ const BlogEditor = () => {
                 placeholder: 'Start writing here...',
     
             }));
-        }
+        // }
         
     }, [])
 
@@ -96,6 +97,8 @@ const BlogEditor = () => {
             return toast.error('Please write a title to publish it.');
         }
 
+        console.log(textEditor.isReady)
+
         if(textEditor.isReady){
             textEditor.save().then(data => {
                 console.log(data);
@@ -128,6 +131,8 @@ const BlogEditor = () => {
         let loadingToast = toast.loading("Saving Draft......");
 
         e.target.classList.add('disable');
+
+        
 
         if(textEditor.isReady){
             textEditor.save().then(content => {
