@@ -7,6 +7,8 @@ import Loader from "../components/loader.component";
 import MinimalBlogPost from "../components/nobanner-blog-post.component";
 import { activeTabRef } from "../components/inpage-navigation.component";
 import NoDataMessage from "../components/nodata.component";
+import { filterPaginationData } from "../common/filter-pagination-data";
+import LoadMoreDataBtn from "../components/load-more.component";
 
 const HomePage = () => {
 
@@ -16,20 +18,37 @@ const HomePage = () => {
 
     let categories = ["big data", "machine learning" ,"deep learning", "cryptography", "neural network", "back end", "front end"]
 
-    const fetchLatestBlogs = () => {
-        axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/blog/latest-blogs")
-        .then( ({data}) => {
-            setBlogs(data.blogs);
+    const fetchLatestBlogs = ({page = 1}) => {
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/blog/latest-blogs", {page})
+        .then( async ({data}) => {
+
+            let formatedData = await filterPaginationData({
+                state: blogs,
+                data: data.blogs,
+                page,
+                countRoute: "/all-latest-blogs-count"
+            })
+            
+            setBlogs(formatedData);
         })
         .catch(err => {
             console.log(err);
         }) 
     }
 
-    const fetchBlogsByCategory = () => {
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/blog/search-blogs", {tag: pageState})
-        .then( ({data}) => {
-            setBlogs(data.blogs);
+    const fetchBlogsByCategory = ({page = 1}) => {
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/blog/search-blogs", {tag: pageState, page})
+        .then(async ({data}) => {
+            let formatedData = await filterPaginationData({
+                state: blogs,
+                data: data.blogs,
+                page,
+                countRoute: "/search-blogs-count",
+                data_to_send: {tag: pageState}
+            })
+
+            
+            setBlogs(formatedData);
         })
         .catch(err => {
             console.log(err);
@@ -65,9 +84,9 @@ const HomePage = () => {
         activeTabRef.current.click()
 
         if(pageState == "home"){
-            fetchLatestBlogs();
+            fetchLatestBlogs({page: 1});
         } else{
-            fetchBlogsByCategory();
+            fetchBlogsByCategory({page: 1});
         }
 
         if(!trendingBlogs){
@@ -93,15 +112,16 @@ const HomePage = () => {
                                 blogs == null ?  (
                                     <Loader />
                                 ) : (
-                                    blogs.length ? 
-                                        blogs.map((blog, idx) => {
+                                    blogs.results.length ? 
+                                        blogs.results.map((blog, idx) => {
                                             return (<AnimationWrapper transition={{duration:1, delay: idx*.1}} key={idx}>
                                                 <BlogPostCard content={blog} author={blog.author.personal_info} />
                                                 </AnimationWrapper>
                                             );
                                         })
                                     : <NoDataMessage message="No Blogs published" />
-                            )}
+                                )}
+                            <LoadMoreDataBtn state={blogs} fetchDataFun={(pageState == "home" ? fetchLatestBlogs : fetchBlogsByCategory)} />
                         </>
 
                         {

@@ -85,12 +85,15 @@ const createBlog = (req, res) => {
 
 const getLatestBlogs = (req, res) => {
 
+    let {page} = req.body;
+
     const maxLimit = 5;
 
     Blog.find({draft: false})
     .populate("author", "personal_info.profile_img personal_info.username personal_info.fullname -_id")
     .sort({"publishedAt": -1})
     .select("blog_id title des banner activity tags publishedAt -_id")
+    .skip((page -1) * maxLimit)
     .limit(maxLimit)
     .then(blogs => {
         return res.status(200).json({blogs});
@@ -116,16 +119,23 @@ const getTrendingBlogs = (req, res) => {
 }
 
 const getSearchingBlogs = (req, res) => {
-    let {tag} = req.body;
+    let {tag, query,  page} = req.body;
 
-    let findQuery = {tags: tag, draft: false};
+    let findQuery;
 
-    let maxLimit = 5;
+    let maxLimit = 1;
+
+    if(tag){
+        findQuery = {tags: tag, draft: false};
+    } else if(query){
+        findQuery = {draft: false, title: new RegExp(query, 'i')}
+    }
 
     Blog.find(findQuery)
     .populate("author", "personal_info.profile_img personal_info.username personal_info.fullname -_id")
     .sort({"publishedAt": -1})
     .select("blog_id title des banner activity tags publishedAt -_id")
+    .skip((page -1) * maxLimit)
     .limit(maxLimit)
     .then(blogs => {
         return res.status(200).json({blogs});
@@ -135,6 +145,40 @@ const getSearchingBlogs = (req, res) => {
     })
 
 
+}
+
+const getCountOfAllLatestBlogs = (req, res) => {
+
+    Blog.countDocuments({ draft: false })
+    .then(count => {
+        return res.status(200).json( {totalDocs: count} );
+    })
+    .catch(err => {
+        console.log(err.message);
+        return res.status(500).json({"error": err.message });
+    })
+
+}
+
+const getCountOfSearchingBlogs = (req, res) => {
+    let {tag, query} = req.body;
+
+    let findQuery;
+
+    if(tag){
+        findQuery = {tags: tag, draft: false};
+    } else if(query){
+        findQuery = {draft: false, title: new RegExp(query, 'i')}
+    }
+
+    Blog.countDocuments(findQuery)
+    .then(count => {
+        return res.status(200).json( {totalDocs: count} );
+    })
+    .catch(err => {
+        console.log(err.message);
+        return res.status(500).json({"error": err.message });
+    })
 }
 
 const ocr = (req, res) => {
@@ -175,4 +219,4 @@ const ocr = (req, res) => {
 
 
 
-export {upLoadImages, createBlog, getLatestBlogs, getTrendingBlogs, getSearchingBlogs, ocr};
+export {upLoadImages, createBlog, getLatestBlogs, getTrendingBlogs, getSearchingBlogs, getCountOfAllLatestBlogs, getCountOfSearchingBlogs, ocr};
