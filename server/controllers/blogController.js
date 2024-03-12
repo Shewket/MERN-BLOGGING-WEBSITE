@@ -119,7 +119,7 @@ const getTrendingBlogs = (req, res) => {
 }
 
 const getSearchingBlogs = (req, res) => {
-    let {tag, query,  page} = req.body;
+    let {tag, query, author,  page} = req.body;
 
     let findQuery;
 
@@ -129,6 +129,8 @@ const getSearchingBlogs = (req, res) => {
         findQuery = {tags: tag, draft: false};
     } else if(query){
         findQuery = {draft: false, title: new RegExp(query, 'i')}
+    } else if(author){
+        findQuery = {author, draft: false}
     }
 
     Blog.find(findQuery)
@@ -161,7 +163,7 @@ const getCountOfAllLatestBlogs = (req, res) => {
 }
 
 const getCountOfSearchingBlogs = (req, res) => {
-    let {tag, query} = req.body;
+    let {tag, query, author} = req.body;
 
     let findQuery;
 
@@ -169,6 +171,8 @@ const getCountOfSearchingBlogs = (req, res) => {
         findQuery = {tags: tag, draft: false};
     } else if(query){
         findQuery = {draft: false, title: new RegExp(query, 'i')}
+    } else if(author){
+        findQuery = {author, draft: false}
     }
 
     Blog.countDocuments(findQuery)
