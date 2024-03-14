@@ -119,14 +119,14 @@ const getTrendingBlogs = (req, res) => {
 }
 
 const getSearchingBlogs = (req, res) => {
-    let {tag, query, author,  page} = req.body;
+    let {tag, query, author, page, limit, eliminate_blog} = req.body;
 
     let findQuery;
 
-    let maxLimit = 1;
+    let maxLimit = limit ? limit : 1;
 
     if(tag){
-        findQuery = {tags: tag, draft: false};
+        findQuery = {tags: tag, draft: false, blog_id: {$ne: eliminate_blog}};
     } else if(query){
         findQuery = {draft: false, title: new RegExp(query, 'i')}
     } else if(author){
@@ -185,6 +185,29 @@ const getCountOfSearchingBlogs = (req, res) => {
     })
 }
 
+const getBlog = (req, res) => {
+
+    let {blog_id} = req.body;
+    let increamentVal = 1;
+
+    Blog.findOneAndUpdate({blog_id} , {$inc: {"activity.total_reads": increamentVal}})
+    .populate("author", "personal_info.fullname personal_info.username personal_info.profile_img")
+    .select("title des content banner activity publishedAt blog_id tags")
+    .then(blog => {
+       
+        User.findOneAndUpdate({"personal_info.username": blog.author.personal_info.username}, {$inc: {"account_info.total_reads": increamentVal}
+        })
+        .catch(err => {
+            return res.status(500).json({"error": err.message})
+        })
+        return res.status(200).json({blog});
+    })
+    .catch(err => {
+        return res.status(500).json({"error": err.message });
+    })
+
+}
+
 const ocr = (req, res) => {
 
    let {image, language} = req.body;
@@ -223,4 +246,4 @@ const ocr = (req, res) => {
 
 
 
-export {upLoadImages, createBlog, getLatestBlogs, getTrendingBlogs, getSearchingBlogs, getCountOfAllLatestBlogs, getCountOfSearchingBlogs, ocr};
+export {upLoadImages, createBlog, getLatestBlogs, getTrendingBlogs, getSearchingBlogs, getCountOfAllLatestBlogs, getCountOfSearchingBlogs, getBlog, ocr};

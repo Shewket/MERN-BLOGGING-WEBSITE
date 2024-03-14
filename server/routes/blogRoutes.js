@@ -1,6 +1,6 @@
 import {Router} from "express";
 
-import { upLoadImages, createBlog, getLatestBlogs, getTrendingBlogs, getSearchingBlogs, getCountOfAllLatestBlogs,getCountOfSearchingBlogs, ocr} from "../controllers/blogController.js";
+import { upLoadImages, createBlog, getLatestBlogs, getTrendingBlogs, getSearchingBlogs, getCountOfAllLatestBlogs,getCountOfSearchingBlogs, getBlog, ocr} from "../controllers/blogController.js";
 import photoMiddleware from "../middlewares/photoMiddleware.js";
 import verifyToken from "../middlewares/verifyToken.js";
 
@@ -14,6 +14,7 @@ router.route("/trending-blogs").get(getTrendingBlogs);
 router.route("/search-blogs").post(getSearchingBlogs);
 router.route("/all-latest-blogs-count").post(getCountOfAllLatestBlogs);
 router.route("/search-blogs-count").post(getCountOfSearchingBlogs);
+router.route("/get-blog").post(getBlog);
 router.route("/ocr").post(ocr)
 
 
