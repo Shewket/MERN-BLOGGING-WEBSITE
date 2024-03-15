@@ -11,7 +11,7 @@ import axios from "axios";
 
 const OCRForm = () => {
 
-    let {setEditorState} = useContext(EditorContext);
+    let {setEditorState, setTextEditor} = useContext(EditorContext);
 
     const [currentImageUrl, setCurrentImageUrl] = useState('')
 
@@ -22,6 +22,7 @@ const OCRForm = () => {
 
     const handleCloseEvent = () => {
         setEditorState("editor");
+        setTextEditor({isReady:false});
     }
 
     const handleOCRImageEvent = (img) => {
