@@ -7,6 +7,7 @@ import Loader from "../components/loader.component";
 import BlogInteraction from "../components/blog-interaction.component";
 import BlogPostCard from "../components/blog-post.component";
 import BlogContent from "../components/blog-content.component";
+import CommentsContainer, { fetchComments } from "../components/comments.component";
 
 export const blogStructure = {
     title: '',
@@ -26,16 +27,19 @@ const BlogPage = () => {
     const [blog, setBlog] = useState(blogStructure);
     const [similarBlogs, setSimilarBlogs] = useState(null)
     const [loading, setLoading] = useState(true);
+    const [isLikedByUser, setIsLikedByUser] = useState(false);
+    const [commentsWrapper, setCommentsWrapper] = useState(false);
+    const [totalParentCommentsLoaded, setTotalParentCommentsLoaded] = useState(0);
 
     let {title, content, banner, author: {personal_info: {fullname, username: author_username, profile_img}}, publishedAt} = blog;
 
     const fetchBlog = () => {
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/blog/get-blog", {blog_id})
-        .then(( {data: {blog}}) => {
+        .then(async( {data: {blog}}) => {
 
+            blog.comments = await fetchComments({blog_id: blog._id, setParentCommentCountFun: setTotalParentCommentsLoaded});
+            
             setBlog(blog);
-            console.log(blog.content);
-
 
             axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/blog/search-blogs", {tag: blog.tags[0], limit: 6, eliminate_blog: blog_id})
             .then(({data}) => {
@@ -62,6 +66,9 @@ const BlogPage = () => {
         setBlog(blogStructure);
         setSimilarBlogs(null);
         setLoading(true);
+        setIsLikedByUser(false);
+        setCommentsWrapper(false);
+        setTotalParentCommentsLoaded(0);
     }
 
     return (
@@ -69,7 +76,9 @@ const BlogPage = () => {
             {
                 loading ? <Loader />
                 : 
-                <BlogContext.Provider value={{blog, setBlog}}>
+                <BlogContext.Provider value={{blog, setBlog, isLikedByUser, setIsLikedByUser, commentsWrapper, setCommentsWrapper, totalParentCommentsLoaded, setTotalParentCommentsLoaded}}>
+
+                    <CommentsContainer />
                     <div className="max-w-[900px] center py-10 max-lg:px-[5vw]">
 
                         <img src={banner} className="aspect-video"/>
@@ -106,7 +115,10 @@ const BlogPage = () => {
 
                         <BlogInteraction />
 
+                        
+
                         {
+                            
                             similarBlogs != null && similarBlogs.length ?
                                 <>
                                     <h1 className="text-2xl mt-14 mb-10 font-medium">Similar Blogs</h1>

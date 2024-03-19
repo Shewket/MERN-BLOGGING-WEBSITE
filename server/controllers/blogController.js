@@ -3,6 +3,7 @@ import {nanoid} from 'nanoid';
 import { exec, spawn } from 'child_process';
 import Blog from '../Schema/Blog.js';
 import User from '../Schema/User.js';
+import Notification from '../Schema/Notification.js';
 
 const DESCRIPTION_LIMIT = 500;
 const TAGS_LIMIT = 10;
@@ -230,6 +231,57 @@ const getBlog = (req, res) => {
 
 }
 
+const likeBlog = (req, res) => {
+
+    let user_id = req.user;
+
+    // isLikedByUser default value is false
+    let {_id, isLikedByUser} = req.body;
+
+    let increamentVal = !isLikedByUser ? 1 : -1;
+
+    Blog.findOneAndUpdate({_id}, {$inc: {"activity.total_likes": increamentVal}})
+    .then(blog => {
+        if(!isLikedByUser){
+            let like = new Notification({
+                type: "like",
+                blog: _id,
+                notification_for: blog.author,
+                user: user_id
+            })
+
+            like.save().then(notification => {
+                return res.status(200).json({liked_by_user: true})
+            })
+        } else{
+            Notification.findOneAndDelete({ user: user_id, blog: _id, type: "like" })
+            .then(data => {
+                return res.status(200).json({liked_by_user: false});
+            })
+            .catch(err => {
+                return res.status(500).json({"error": err.message});
+            })
+        }
+    })
+
+}
+
+const getIsLikedByUser = (req, res) => {
+
+    let user_id = req.user;
+
+    let {_id} = req.body;
+
+    Notification.exists({user: user_id, type: "like", blog: _id})
+    .then(result => {
+        return res.status(200).json({result})
+    })
+    .catch(err => {
+        return res.status(500).json({"error": err.message });
+    })
+
+}
+
 const ocr = (req, res) => {
 
    let {image, language} = req.body;
@@ -268,4 +320,4 @@ const ocr = (req, res) => {
 
 
 
-export {upLoadImages, createBlog, getLatestBlogs, getTrendingBlogs, getSearchingBlogs, getCountOfAllLatestBlogs, getCountOfSearchingBlogs, getBlog, ocr};
+export {upLoadImages, createBlog, getLatestBlogs, getTrendingBlogs, getSearchingBlogs, getCountOfAllLatestBlogs, getCountOfSearchingBlogs, getBlog, likeBlog, getIsLikedByUser, ocr};
