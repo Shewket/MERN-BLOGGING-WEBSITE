@@ -85,7 +85,7 @@ const getReplies = (req, res) => {
     Comment.findOne({_id})
     .populate({
         path: "children",
-        option: {
+        options: {
             limit: maxLimit,
             skip: skip,
             sort: {'commentedAt': -1}
@@ -130,7 +130,7 @@ const deleteComments = (_id) => {
         })
     })
     .catch(err => {
-        console.log(err.message);
+        console.log(err.message);   
     })
 }
 

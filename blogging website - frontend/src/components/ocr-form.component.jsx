@@ -13,6 +13,8 @@ const OCRForm = () => {
 
     let {setEditorState, setTextEditor} = useContext(EditorContext);
 
+    let [convertedText, setConvertedText] = useState("");
+
     const [currentImageUrl, setCurrentImageUrl] = useState('')
 
     const [selectedLanguage, setSelectedLanguage] = useState('');
@@ -70,10 +72,19 @@ const OCRForm = () => {
             return toast.error('Please select a language first 😔');
         }
 
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/blog/ocr", {
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/ocr", {
             image: currentImageUrl,
             language: selectedLanguage
+        }, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
         })
+        .then(res => {
+            setConvertedText(res.data.result)
+        })
+
+
 
 
 
@@ -144,8 +155,7 @@ const OCRForm = () => {
 
                         <p className="text-dark-grey mb-2">Converted text</p>
                         <textarea 
-    
-
+                            value={convertedText}
                             className="h-64 resize-none leadning-7 input-box pl-4"
                         >
 

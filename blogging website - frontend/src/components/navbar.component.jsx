@@ -38,7 +38,7 @@ const Navbar = () => {
  
     return (
         <>
-            <nav className="navbar">
+            <nav className="navbar z-50">
 
                 <Link to="/" className="flex-none  w-52" >
                     <img src={logo} className="w-full"/>

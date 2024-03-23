@@ -1,9 +1,9 @@
 import fs from 'fs';
 import {nanoid} from 'nanoid';
-import { exec, spawn } from 'child_process';
 import Blog from '../Schema/Blog.js';
 import User from '../Schema/User.js';
 import Notification from '../Schema/Notification.js';
+
 
 const DESCRIPTION_LIMIT = 500;
 const TAGS_LIMIT = 10;
@@ -282,42 +282,9 @@ const getIsLikedByUser = (req, res) => {
 
 }
 
-const ocr = (req, res) => {
-
-   let {image, language} = req.body;
-
-//    let pythonProcess = spawn('python', ['./ocr.py', image, language]);
-
-//    let result = [];
-
-//    pythonProcess.stdout.on('data', (data) => {
-//         result += data.toString();
-//    })
-
-//    pythonProcess.stderr.on('data', (data) => {
-//         let output = data.toString();
-        
-//         try {
-//             result = JSON.parse(output);
-//         } catch (error) {
-//             console.error('Error parsing OCR results:', error);
-//         }
-//    })
-
-//    pythonProcess.on('close', (code) => {
-//         if(code !== 0){
-//             console.log(`child process exited with code ${code}`);
-//         }
-//         else{
-//             res.json(result);
-//         }
-       
-//    })
-
-
-}
 
 
 
 
-export {upLoadImages, createBlog, getLatestBlogs, getTrendingBlogs, getSearchingBlogs, getCountOfAllLatestBlogs, getCountOfSearchingBlogs, getBlog, likeBlog, getIsLikedByUser, ocr};
+
+export {upLoadImages, createBlog, getLatestBlogs, getTrendingBlogs, getSearchingBlogs, getCountOfAllLatestBlogs, getCountOfSearchingBlogs, getBlog, likeBlog, getIsLikedByUser};
