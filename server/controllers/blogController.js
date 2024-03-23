@@ -11,7 +11,6 @@ const TAGS_LIMIT = 10;
 
 const upLoadImages =(req, res)  => {
 
-    // console.log(req.files);
 
     const uploadedFiles = [];
 
