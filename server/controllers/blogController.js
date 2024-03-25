@@ -284,6 +284,4 @@ const getIsLikedByUser = (req, res) => {
 
 
 
-
-
 export {upLoadImages, createBlog, getLatestBlogs, getTrendingBlogs, getSearchingBlogs, getCountOfAllLatestBlogs, getCountOfSearchingBlogs, getBlog, likeBlog, getIsLikedByUser};

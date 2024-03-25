@@ -75,7 +75,7 @@ const SideNav = () => {
                             Write
                         </NavLink>
 
-                        <h1 className="text-xl text-dark-grey mt-20 mb-3">Settings</h1>
+                        <h1 className="text-xl text-dark-grey mt-5 mb-3">Settings</h1>
                         <hr className="border-grey -ml-6 mb-8 mr-6"/>
 
                         <NavLink to="/settings/edit-profile" onClick={(e) => setPageState(e.target.innerText) } className="sidebar-link">

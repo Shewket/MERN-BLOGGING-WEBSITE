@@ -6,7 +6,7 @@ const uploadImage = async (img) => {
         const data = new FormData();
   
 
-        // Banner
+        
         if (img.target){
             const files = img.target.files
             for (let i = 0; i < files.length; i++) {
