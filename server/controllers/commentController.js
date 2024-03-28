@@ -5,7 +5,7 @@ import Notification from "../Schema/Notification.js";
 
 const addComment = (req, res) => {
     let user_id = req.user;
-    let {_id, comment, blog_author, replying_to} = req.body;
+    let {_id, comment, blog_author, replying_to, notification_id} = req.body;
 
     if(!comment.length) {
         return res.status(403).json({error: "Comment cannot be empty"});
@@ -39,11 +39,17 @@ const addComment = (req, res) => {
             comment: commentFile._id
         }
 
+
         if(replying_to){
-            notificationObj.replying_on_comment = replying_to;
+            notificationObj.replied_on_comment = replying_to;
             await Comment.findOneAndUpdate({_id: replying_to}, {$push: {children: commentFile._id} })
             .then(replyingToCommentDoc => { notificationObj.notification_for = replyingToCommentDoc.commented_by })
+            
 
+            if(notification_id){
+                Notification.findOneAndUpdate({_id: notification_id}, {reply: commentFile._id})
+                .then(notification => console.log("Reply notification updated"))
+            }
 
         }
 
@@ -118,7 +124,7 @@ const deleteComments = (_id) => {
 
         Notification.findOneAndDelete({comment: _id}).then(notification => console.log('comment notification deleted'));
 
-        Notification.findOneAndDelete({reply: _id}).then(notification => console.log('reply notification deleted'));
+        Notification.findOneAndUpdate({reply: _id}, {$unset: {reply: 1}}).then(notification => console.log('reply notification deleted'));
 
         Blog.findOneAndUpdate({_id: comment.blog_id}, {$pull: {comments: _id}, $inc: {"activity.total_comments": -1}, "acitivity.total_parent_comments": comment.parent ? 0 : -1})
         .then(blog => {

@@ -28,7 +28,7 @@ const BlogEditor = () => {
 
 
     useEffect( () => {
-        console.log(textEditor.isReady);
+        console.log(content);
         if(!textEditor.isReady){
             setTextEditor(new EditorJS({
                 holder: 'textEditor',
@@ -42,7 +42,6 @@ const BlogEditor = () => {
 
 
     const handleBannerUpload = (img) => {
-
 
 
         if(img){
@@ -99,11 +98,8 @@ const BlogEditor = () => {
             return toast.error('Please write a title to publish it.');
         }
 
-        console.log(textEditor.isReady)
-
         if(textEditor.isReady){
             textEditor.save().then(data => {
-                console.log(data);
                 if(data.blocks.length){
                     setBlog({...blog, content: data});
                     setEditorState("publish");
@@ -118,6 +114,17 @@ const BlogEditor = () => {
     }
 
     const handleOCREvent = (e) => {
+
+        if(textEditor.isReady){
+            textEditor.save().then(data => {
+                if(data.blocks.length){
+                    setBlog({...blog, content: data});
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+        }
         setEditorState("ocr")
     }
 
@@ -238,10 +245,6 @@ const BlogEditor = () => {
                         <hr className="w-full opacity-10 my-1"/>
 
                         <div id="textEditor" className="font-gelasio"></div>
-
-
-
-
 
 
                     </div>

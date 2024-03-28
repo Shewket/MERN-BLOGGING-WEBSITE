@@ -1,9 +1,10 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {Link, useNavigate, Outlet} from 'react-router-dom';
 import logo from "../imgs/logo2.png"
 import {UserContext} from "../App.jsx"
 import UserNavigationPanel from './user-navigation.component';
 import { useUser } from '@descope/react-sdk';
+import axios from 'axios';
 
 const Navbar = () => {
 
@@ -12,7 +13,7 @@ const Navbar = () => {
 
     let navigate =useNavigate();
 
-    const {userAuth, userAuth: {access_token, profile_img}} = useContext(UserContext);
+    const {userAuth, userAuth: {access_token, profile_img, new_notification_available}, setUserAuth} = useContext(UserContext);
 
     const userDetail = useUser();
 
@@ -34,8 +35,25 @@ const Navbar = () => {
             navigate(`/search/${query}`);
         }
     }
-    
- 
+
+    useEffect(() => {
+
+        if(access_token){
+            axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/notification/new-notification", {
+                headers: {
+                    "Authorization": `Bearer ${access_token}`
+                }
+            })
+            .then(({data}) => {
+                setUserAuth({...userAuth, ...data})
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        }
+
+    }, [access_token])
+
     return (
         <>
             <nav className="navbar z-50">
@@ -69,9 +87,14 @@ const Navbar = () => {
                     {
                         access_token ||  userDetail?.user?.OAuth ?
                         <>
-                            <Link to="/dashboard/notification">
+                            <Link to="/dashboard/notifications">
                                 <button className='w-12 h-12 rounded-full bg-grey relative hover:bg-black/10'>
-                                    <i className="fi fi-rr-bell-ring text-xl block mt-1"></i>
+                                    <i className="fi fi-rr-bell text-xl block mt-1"></i>
+                                    {
+                                        new_notification_available ?
+                                        <span className="bg-red w-3 h-3 rounded-full absolute z-10 top-2 right-2"></span> : ""
+                                    }
+                                    
                                 </button>
                             
                             </Link>
