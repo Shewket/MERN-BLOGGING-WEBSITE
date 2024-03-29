@@ -3,6 +3,7 @@ import {nanoid} from 'nanoid';
 import Blog from '../Schema/Blog.js';
 import User from '../Schema/User.js';
 import Notification from '../Schema/Notification.js';
+import Comment from '../Schema/Comment.js';
 
 
 const DESCRIPTION_LIMIT = 500;
@@ -281,7 +282,75 @@ const getIsLikedByUser = (req, res) => {
 
 }
 
+const manageBlogs = (req, res) => { 
+
+    let user_id = req.user;
+
+    let {page, draft, query, deletedDocCount} = req.body;
+
+    let maxLimit = 5;
+    let skipDocs = (page - 1) * maxLimit;
+
+    if(deletedDocCount) {
+        skipDocs -= deletedDocCount;
+
+    }
+
+    // title is case sensative
+    Blog.find({author: user_id, draft, title: new RegExp(query, 'i')})
+    .skip(skipDocs)
+    .limit(maxLimit)
+    .sort({publishedAt: -1})
+    .select("title banner publishedAt blog_id activity des draft -_id")
+    .then(blogs => {
+        return res.status(200).json({blogs});
+    })
+    .catch(err => {
+        return res.status(500).json({"error": err.message });
+    })
+
+}
+
+const getBlogsCount = (req, res) => {
+    let user_id = req.user; 
+
+    let {draft, query} = req.body;
+
+    Blog.countDocuments({author: user_id, draft, title: new RegExp(query, 'i')})
+    .then(count => {
+        return res.status(200).json({totalDocs: count});
+    })
+    .catch(err => {
+        console.log(err.message);
+        return res.status(500).json({"error": err.message });
+    })
+
+
+}
+
+const deleteBlog = (req, res) => {
+
+    let user_id = req.user;
+    let {blog_id} = req.body;
+
+    Blog.findOneAndDelete({blog_id})
+    .then(blog => {
+        Notification.deleteMany({blog: blog._id}).then(data => console.log('Notifications deleted'));
+
+        Comment.deleteMany({blog_id: blog._id}).then(data => console.log('Comments deleted'));
+
+        User.findOneAndUpdate({_id: user_id}, {$pull: {blog: blog._id}, $inc: {"account_info.total_posts": -1}})
+        .then(user => console.log('Blog deleted'));
+
+        return res.status(200).json({"status": "Done!"});
+    })
+    .catch(err => {
+        return res.status(500).json({"error": err.message });
+    })
+    
+}
 
 
 
-export {upLoadImages, createBlog, getLatestBlogs, getTrendingBlogs, getSearchingBlogs, getCountOfAllLatestBlogs, getCountOfSearchingBlogs, getBlog, likeBlog, getIsLikedByUser};
+
+export {upLoadImages, createBlog, getLatestBlogs, getTrendingBlogs, getSearchingBlogs, getCountOfAllLatestBlogs, getCountOfSearchingBlogs, getBlog, likeBlog, getIsLikedByUser, manageBlogs, getBlogsCount, deleteBlog};
