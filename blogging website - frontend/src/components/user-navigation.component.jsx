@@ -7,7 +7,7 @@ import { useUser, useDescope } from '@descope/react-sdk';
 
 const UserNavigationPanel = () => {
 
-    const { userAuth: {username}, setUserAuth } = useContext(UserContext);
+    const { userAuth: {username, isAdmin}, setUserAuth } = useContext(UserContext);
 
     const userDetail = useUser();
     const navigate = useNavigate();

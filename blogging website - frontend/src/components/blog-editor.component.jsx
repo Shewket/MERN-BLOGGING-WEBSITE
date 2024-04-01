@@ -1,7 +1,9 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import AnimationWrapper from "../common/page-animation";
-import logo from "../imgs/logo1.png"
-import defaultBanner from "../imgs/blog banner.png";
+import lightLogo from "../imgs/logo.png"
+import darkLogo from "../imgs/dark-logo.png"
+import lightBanner from "../imgs/blog banner.png";
+import darkBanner from "../imgs/dark-banner.png"
 import uploadImage from "../common/uploadImg";
 import { useContext, useEffect} from "react";
 import { Toaster, toast } from "react-hot-toast";
@@ -9,7 +11,7 @@ import {EditorContext} from "../pages/editor.pages";
 import EditorJS from "@editorjs/editorjs";
 import tools from "./tools.component";
 import axios from "axios";
-import { UserContext } from "../App";
+import { ThemeContext, UserContext } from "../App";
 
 
 
@@ -18,6 +20,8 @@ const BlogEditor = () => {
 
 
     let { blog, blog: { title, banner, content, tags, des}, setBlog, textEditor, setTextEditor, setEditorState} = useContext(EditorContext);
+
+    let {theme} = useContext(ThemeContext);
 
     let {userAuth: {access_token}} =  useContext(UserContext);
     let {blog_id} = useParams();
@@ -85,8 +89,9 @@ const BlogEditor = () => {
 
     const handleError = (e) => {
         let img = e.target;
+        
 
-        img.src = defaultBanner;
+        img.src = theme == "light" ? lightBanner : darkBanner;
     }
 
     const handlePublishEvent = () => {
@@ -183,7 +188,7 @@ const BlogEditor = () => {
 
             <nav className="navbar">
                 <Link to="/">
-                    <img src={logo} className="flex-none w-52"/>
+                    <img src={theme == "light" ? lightLogo : darkLogo} className={"flex-none " + (theme == "light" ? "w-72" : "w-32")}/>
                 </Link>
                 <p className="max-md:hidden text-black line-clamp-1 w-full">
                     {title ? title : "New Blog" }
@@ -237,7 +242,7 @@ const BlogEditor = () => {
                         <textarea
                             defaultValue={title}
                             placeholder="Blog Title"
-                            className="text-4xl font-medium w-full h-20 outline-none resize-none mt-10 leading-tight placeholder:opacity-40"
+                            className="text-4xl font-medium w-full h-20 outline-none resize-none mt-10 leading-tight placeholder:opacity-40 bg-white"
                             onKeyDown={handleTitleKeyDown}
                             onChange={handleTitleChange}
                         />

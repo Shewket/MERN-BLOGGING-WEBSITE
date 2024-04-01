@@ -7,6 +7,7 @@ import { createProxyMiddleware  } from 'http-proxy-middleware';
 import userRoutes from './routes/userRoutes.js';
 import blogRoutes from './routes/blogRoutes.js';
 import commentRoutes from './routes/commentRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
 
 
 const server = express();
@@ -29,6 +30,7 @@ mongoose.connect(process.env.DB_LOCATION, {
 server.use('/', userRoutes); 
 server.use('/blog', blogRoutes); 
 server.use('/comment', commentRoutes); 
+server.use('/notification', notificationRoutes);
 
 
 // Flask

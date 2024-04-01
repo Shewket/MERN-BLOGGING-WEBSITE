@@ -1,15 +1,19 @@
 import { useContext, useEffect, useState } from 'react';
 import {Link, useNavigate, Outlet} from 'react-router-dom';
-import logo from "../imgs/logo2.png"
-import {UserContext} from "../App.jsx"
+import lightLogo from "../imgs/logo.png";
+import darkLogo from "../imgs/dark-logo.png";
+import {ThemeContext, UserContext} from "../App.jsx"
 import UserNavigationPanel from './user-navigation.component';
 import { useUser } from '@descope/react-sdk';
 import axios from 'axios';
+import { storeInSession } from '../common/session';
 
 const Navbar = () => {
 
     const  [searchBoxVisibility, setSearchBoxVisibility] = useState(false);
     const  [ userNavPanel, setUserNavPanel ] = useState(false);
+
+    let {theme, setTheme} = useContext(ThemeContext);
 
     let navigate =useNavigate();
 
@@ -36,6 +40,16 @@ const Navbar = () => {
         }
     }
 
+    const changeTheme = () => {
+        let newTheme = theme === "light" ? "dark" : "light";
+
+        setTheme(newTheme);
+
+        document.body.setAttribute("data-theme", newTheme);
+
+        storeInSession("theme", newTheme);
+    }
+
     useEffect(() => {
 
         if(access_token){
@@ -58,8 +72,8 @@ const Navbar = () => {
         <>
             <nav className="navbar z-50">
 
-                <Link to="/" className="flex-none  w-52" >
-                    <img src={logo} className="w-full"/>
+                <Link to="/" className={"flex-none " + (theme == "light" ? "w-40" : "w-20")}>
+                    <img src={theme == "light" ? lightLogo : darkLogo} className="w-full"/>
                 </Link>
 
 
@@ -83,6 +97,10 @@ const Navbar = () => {
                         <i className="fi fi-rr-file-edit"></i>
                         <p>Write</p>
                     </Link>
+
+                    <button className='w-12 h-12 rounded-full bg-grey relative hover:bg-black/10' onClick={changeTheme}>
+                        <i className={"fi fi-rr-"+ (theme=="light" ? "moon-stars" : "sun") + " text-xl block mt-1" }></i>            
+                    </button>
 
                     {
                         access_token ||  userDetail?.user?.OAuth ?

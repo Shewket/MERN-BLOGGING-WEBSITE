@@ -3,7 +3,7 @@ import { Navigate, NavLink, Outlet } from "react-router-dom";
 import { UserContext } from "../App";
 const SideNav = () => {
 
-    let {userAuth: {access_token, new_notification_available}} = useContext(UserContext);
+    let {userAuth: {access_token, new_notification_available, isAdmin}} = useContext(UserContext);
 
     let page = location.pathname.split("/")[2];
 
