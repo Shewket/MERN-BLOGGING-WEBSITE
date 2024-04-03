@@ -7,17 +7,27 @@ import uploadImage  from "../common/uploadImg";
 import {useRef} from "react";
 import { useState } from "react";
 import axios from "axios";
+import {AiOutlineCaretUp, AiOutlineCaretDown, AiOutlineSearch} from "react-icons/ai";
+import langugeList from "../language-list.json"
+import { ThemeContext } from "../App";
 
 
 const OCRForm = () => {
+
+    let {theme} = useContext(ThemeContext);
 
     let {setEditorState, setTextEditor} = useContext(EditorContext);
 
     let [convertedText, setConvertedText] = useState("");
 
-    const [currentImageUrl, setCurrentImageUrl] = useState('')
+    const [currentImageUrl, setCurrentImageUrl] = useState('');
 
     const [selectedLanguage, setSelectedLanguage] = useState('');
+
+
+    const [isOpen, setIsOpen] = useState(false);
+
+    const [inputValue, setInputValue] = useState('');
 
     let ocrImageRef = useRef();
 
@@ -74,7 +84,7 @@ const OCRForm = () => {
 
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/ocr", {
             image: currentImageUrl,
-            language: selectedLanguage
+            language: selectedLanguage.abbreviation
         }, {
             headers: {
                 'Content-Type': 'multipart/form-data'
@@ -83,15 +93,7 @@ const OCRForm = () => {
         .then(res => {
             setConvertedText(res.data.result)
         })
-
-
-
-
-
     }
-
-
-
 
     return (
         <AnimationWrapper>
@@ -104,7 +106,7 @@ const OCRForm = () => {
                     <i className="fi fi-rr-cross"></i>
                 </button>
 
-                <div className="max-w-[550px] center mb-12  md:pl-8 lg:border-r border-grey md:top-[100px] md:px-12 ">
+                <div className="max-w-[550px] center mb-24 md:pl-8 lg:border-r border-grey md:top-[100px] md:px-12 mt-6">
                     <p className="text-dark-grey mb-1">Please Upload</p>
 
                     <div className="w-full aspect-video rounded-lg overflow-hidden bg-grey mt-4">
@@ -127,20 +129,47 @@ const OCRForm = () => {
                         </div>
 
                     
-                    <div className="mt-4 flex items-center space-x-6">
+                    <div className="flex items-center space-x-6 mt-8">
             
-                        <div class="flex items-center">
-                            <input id="default-radio-1" onClick={handleLanguageChangeEvent} type="radio" value="English" name="default-radio"  class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                            <label for="default-radio-1" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Englsih</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input id="default-radio-2" onClick={handleLanguageChangeEvent} type="radio" value="Chinese" name="default-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                            <label for="default-radio-2" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Chinese</label>
-                        </div>
+                        <div className="relative flex flex-col items-center w-[340px] rounded-lg ml-12">
 
-                        <div class="flex items-center">
-                            <input id="default-radio-3" onClick={handleLanguageChangeEvent} type="radio" value="Uyghur" name="default-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                            <label for="default-radio-3" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Uyghur</label>
+                            <button className="btn-dark p-4 w-full flex items-center justify-between font-bold text-lg tracking-wider border-4 border-transparent active:border-white duration-300 active:text-grey" onClick={() => setIsOpen((prev) => !prev)}>
+                                <span className="mr-28">{selectedLanguage ? selectedLanguage.language : "Please Select Language"}</span>
+                                {
+                                    !isOpen ? (
+                                        <AiOutlineCaretDown className="h-4" />
+                                    ) : (
+                                        <AiOutlineCaretUp className="h-4" />
+                                    )
+                                }
+                            </button>
+
+                            {isOpen && (
+                                <ul className={(theme == "light" ? "bg-grey" : "bg-slate-700")+" max-h-40 absolute overflow-y-auto top-20 flex flex-col items-start rounded-lg p-2 w-full"}>
+                                    <div className="flex items-center px-2 sticky top-0">
+                                        <AiOutlineSearch size={18} className="text-grey-900 "/>
+                                        <input 
+                                            type="text" 
+                                            value={inputValue}
+                                            placeholder="Enter a language" 
+                                            onChange={(e) => {setInputValue(e.target.value.toLowerCase())}}
+                                            className={"w-[270px] placeholder:text-grey-700 p-2 outline-none " + (theme == "light" ? "bg-grey" : "bg-slate-700")}/>
+                                    </div>
+                                    {langugeList.map((lang, idx) => (
+                                        <div className="flex w-full justify-between hover:bg-gray-400 cursor-pointer rounded-r-lg border-l-transparent hover:border-l-white border-l-4" key={idx}>
+                                            <li 
+                                                key={lang?.language} 
+                                                onClick={() => {
+                                                    setSelectedLanguage(lang); 
+                                                    setIsOpen(false);
+                                                    setInputValue("");
+                                                }}
+                                                className={`font-bold p-1 ${lang?.language?.toLowerCase().startsWith(inputValue) ? "block" : "hidden"}`}>{lang?.language}
+                                            </li>
+                                        </div>
+                                    ))} 
+                                </ul>
+                            )}
                         </div>
                  
                     </div>
@@ -151,7 +180,7 @@ const OCRForm = () => {
 
 
 
-                <div className="border-grey lg:border-1 lg:pl-8 md:pt-5">
+                <div className="border-grey mb-24 lg:border-1 lg:pl-8 md:pt-5">
 
                         <p className="text-dark-grey mb-2">Converted text</p>
                         <textarea 

@@ -9,6 +9,8 @@ import { activeTabRef } from "../components/inpage-navigation.component";
 import NoDataMessage from "../components/nodata.component";
 import { filterPaginationData } from "../common/filter-pagination-data";
 import LoadMoreDataBtn from "../components/load-more.component";
+import FloatBar from "../components/float-bar.component";
+
 
 const HomePage = () => {
 
@@ -100,8 +102,8 @@ const HomePage = () => {
         <AnimationWrapper>
             <section className="h-cover flex justify-center gap-10">
 
-                {/* Side Bar */}
-                <div></div>
+                {/* float Bar */}
+                <FloatBar />
 
                 {/* Latest Blogs */}
                 <div className="w-full">
