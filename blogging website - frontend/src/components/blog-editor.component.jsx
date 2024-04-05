@@ -5,7 +5,7 @@ import darkLogo from "../imgs/dark-logo.png"
 import lightBanner from "../imgs/blog banner.png";
 import darkBanner from "../imgs/dark-banner.png"
 import uploadImage from "../common/uploadImg";
-import { useContext, useEffect} from "react";
+import { useContext, useEffect, useState} from "react";
 import { Toaster, toast } from "react-hot-toast";
 import {EditorContext} from "../pages/editor.pages";
 import EditorJS from "@editorjs/editorjs";
@@ -22,27 +22,12 @@ const BlogEditor = () => {
     let { blog, blog: { title, banner, content, tags, des}, setBlog, textEditor, setTextEditor, setEditorState} = useContext(EditorContext);
 
     let {theme} = useContext(ThemeContext);
+    let [langDirection, setLangDirection] = useState("ltr");
 
     let {userAuth: {access_token}} =  useContext(UserContext);
     let {blog_id} = useParams();
 
     let navigate = useNavigate();
-
-
-
-
-    useEffect( () => {
-        console.log(content);
-        if(!textEditor.isReady){
-            setTextEditor(new EditorJS({
-                holder: 'textEditor',
-                data: Array.isArray(content) ? content[0] : content,
-                tools: tools,
-                placeholder: 'Start writing here...',
-    
-            }));
-        }     
-    }, [])
 
 
     const handleBannerUpload = (img) => {
@@ -181,6 +166,39 @@ const BlogEditor = () => {
         }
         
     }
+
+    const handleLangDirection = () => {
+
+        textEditor.destroy();
+        const newDirection = langDirection == "ltr" ? "rtl" : "ltr";
+        setLangDirection(newDirection);
+        document.querySelector('#title').style.direction = newDirection;  
+        // Without destroy the editor to change the direction (using css)
+        // document.querySelector('#textEditor').style.direction = newDirection;  
+    }
+
+    const initializeTextEditor = () => {
+        if(!textEditor.isReady){
+
+            setTextEditor(new EditorJS({
+                holder: 'textEditor',
+                data: Array.isArray(content) ? content[0] : content,
+                tools: tools,
+                placeholder:  langDirection == "ltr" ? 'Start writing here...' : 'بۇ يەردىن باشلاپ يېزىڭ...',
+                i18n: {
+                    direction: langDirection,
+                }
+    
+            }));
+            
+        }
+        
+    }
+
+    useEffect( () => {
+
+        initializeTextEditor();
+    }, [langDirection])
     
     return (
         <>
@@ -239,15 +257,23 @@ const BlogEditor = () => {
                             </label>
                         </div>
 
+                        <button 
+                            className="btn-dark mt-4"
+                            onClick={handleLangDirection}
+                        >
+                            Switch to {langDirection == "ltr" ? "RTL" : "LTR"}
+                        </button>
+
                         <textarea
+                            id="title"
                             defaultValue={title}
-                            placeholder="Blog Title"
+                            placeholder = {langDirection === "ltr" ? "Blog Title" : "بلوگ باش تېما"}
                             className="text-4xl font-medium w-full h-20 outline-none resize-none mt-10 leading-tight placeholder:opacity-40 bg-white"
                             onKeyDown={handleTitleKeyDown}
                             onChange={handleTitleChange}
                         />
 
-                        <hr className="w-full opacity-10 my-1"/>
+                        <hr className="w-full opacity-10 my-2"/>
 
                         <div id="textEditor" className="font-gelasio"></div>
 

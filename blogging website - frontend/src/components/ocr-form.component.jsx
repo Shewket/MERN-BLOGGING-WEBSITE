@@ -82,6 +82,8 @@ const OCRForm = () => {
             return toast.error('Please select a language first 😔');
         }
 
+        let convertLoading = toast.loading('Converting...😉')
+
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/api/ocr", {
             image: currentImageUrl,
             language: selectedLanguage.abbreviation
@@ -91,7 +93,13 @@ const OCRForm = () => {
             }
         })
         .then(res => {
-            setConvertedText(res.data.result)
+            toast.dismiss(convertLoading);
+            setConvertedText(res.data.result);
+            toast.success('Converted successfully 😃');
+
+        })
+        .catch(err => {
+            return toast.error('Something went wrong 😔 :)' + err);
         })
     }
 
