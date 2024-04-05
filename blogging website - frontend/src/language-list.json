@@ -1,0 +1,310 @@
+[
+    {
+        "language": "Chinese",
+        "abbreviation": "ch"
+    },
+    {
+        "language": "English",
+        "abbreviation": "en"
+    },
+    {
+        "language": "French",
+        "abbreviation": "fr"
+    },
+    {
+        "language": "German",
+        "abbreviation": "german"
+    },
+    {
+        "language": "Japan",
+        "abbreviation": "japan"
+    },
+    {
+        "language": "Korean",
+        "abbreviation": "korean"
+    },
+    {
+        "language": "Chinese Traditional",
+        "abbreviation": "chinese_cht"
+    },
+    {
+        "language": "Italian",
+        "abbreviation": "it"
+    },
+    {
+        "language": "Spanish",
+        "abbreviation": "es"
+    },
+    {
+        "language": "Portuguese",
+        "abbreviation": "pt"
+    },
+    {
+        "language": "Russia",
+        "abbreviation": "ru"
+    },
+    {
+        "language": "Ukranian",
+        "abbreviation": "uk"
+    },
+    {
+        "language": "Belarusian",
+        "abbreviation": "be"
+    },
+    {
+        "language": "Telugu",
+        "abbreviation": "te"
+    },
+    {
+        "language": "Saudi Arabia",
+        "abbreviation": "sa"
+    },
+    {
+        "language": "Tamil",
+        "abbreviation": "ta"
+    },
+    {
+        "language": "Afrikaans",
+        "abbreviation": "af"
+    },
+    {
+        "language": "Azerbaijani",
+        "abbreviation": "az"
+    },
+    {
+        "language": "Bosnian",
+        "abbreviation": "bs"
+    },
+    {
+        "language": "Czech",
+        "abbreviation": "cs"
+    },
+    {
+        "language": "Welsh",
+        "abbreviation": "cy"
+    },
+    {
+        "language": "Danish",
+        "abbreviation": "da"
+    },
+    {
+        "language": "Maltese",
+        "abbreviation": "mt"
+    },
+    {
+        "language": "Dutch",
+        "abbreviation": "nl"
+    },
+    {
+        "language": "Norwegian",
+        "abbreviation": "no"
+    },
+    {
+        "language": "Polish",
+        "abbreviation": "pl"
+    },
+    {
+        "language": "Romanian",
+        "abbreviation": "ro"
+    },
+    {
+        "language": "Slovak",
+        "abbreviation": "sk"
+    },
+    {
+        "language": "Slovenian",
+        "abbreviation": "sl"
+    },
+    {
+        "language": "Albanian",
+        "abbreviation": "sq"
+    },
+    {
+        "language": "Swedish",
+        "abbreviation": "sv"
+    },
+    {
+        "language": "Swahili",
+        "abbreviation": "sw"
+    },
+    {
+        "language": "Tagalog",
+        "abbreviation": "tl"
+    },
+    {
+        "language": "Turkish",
+        "abbreviation": "tr"
+    },
+    {
+        "language": "Uzbek",
+        "abbreviation": "uz"
+    },
+    {
+        "language": "Vietnamese",
+        "abbreviation": "vi"
+    },
+    {
+        "language": "Mongolian",
+        "abbreviation": "mn"
+    },
+    {
+        "language": "Abaza",
+        "abbreviation": "abq"
+    },
+    {
+        "language": "Arabic",
+        "abbreviation": "ar"
+    },
+    {
+        "language": "Hindi",
+        "abbreviation": "hi"
+    },
+    {
+        "language": "Uyghur",
+        "abbreviation": "ug"
+    },
+    {
+        "language": "Persian",
+        "abbreviation": "fa"
+    },
+    {
+        "language": "Urdu",
+        "abbreviation": "ur"
+    },
+    {
+        "language": "Serbian(latin)",
+        "abbreviation": "rs_latin"
+    },
+    {
+        "language": "Occitan",
+        "abbreviation": "oc"
+    },
+    {
+        "language": "Marathi",
+        "abbreviation": "mr"
+    },
+    {
+        "language": "Nepali",
+        "abbreviation": "ne"
+    },
+    {
+        "language": "Serbian(cyrillic)",
+        "abbreviation": "rs_cyrillic"
+    },
+    {
+        "language": "Bulgarian",
+        "abbreviation": "bg"
+    },
+    {
+        "language": "Estonian",
+        "abbreviation": "et"
+    },
+    {
+        "language": "Irish",
+        "abbreviation": "ga"
+    },
+    {
+        "language": "Croatian",
+        "abbreviation": "hr"
+    },
+    {
+        "language": "Hungarian",
+        "abbreviation": "hu"
+    },
+    {
+        "language": "Indonesian",
+        "abbreviation": "id"
+    },
+    {
+        "language": "Icelandic",
+        "abbreviation": "is"
+    },
+    {
+        "language": "Kurdish",
+        "abbreviation": "ku"
+    },
+    {
+        "language": "Lithuanian",
+        "abbreviation": "lt"
+    },
+    {
+        "language": "Latvian",
+        "abbreviation": "lv"
+    },
+    {
+        "language": "Maori",
+        "abbreviation": "mi"
+    },
+    {
+        "language": "Malay",
+        "abbreviation": "ms "
+    },
+    {
+        "language": "Adyghe",
+        "abbreviation": "ady"
+    },
+    {
+        "language": "Kabardian",
+        "abbreviation": "kbd"
+    },
+    {
+        "language": "Avar",
+        "abbreviation": "ava"
+    },
+    {
+        "language": "Dargwa",
+        "abbreviation": "dar"
+    },
+    {
+        "language": "Ingush",
+        "abbreviation": "inh"
+    },
+    {
+        "language": "Lak",
+        "abbreviation": "lbe"
+    },
+    {
+        "language": "Lezghian",
+        "abbreviation": "lez"
+    },
+    {
+        "language": "Tabassaran",
+        "abbreviation": "tab"
+    },
+    {
+        "language": "Bihari",
+        "abbreviation": "bh"
+    },
+    {
+        "language": "Maithili",
+        "abbreviation": "mai"
+    },
+    {
+        "language": "Angika",
+        "abbreviation": "ang"
+    },
+    {
+        "language": "Bhojpuri",
+        "abbreviation": "bho"
+    },
+    {
+        "language": "Magahi",
+        "abbreviation": "mah"
+    },
+    {
+        "language": "Nagpur",
+        "abbreviation": "sck"
+    },
+    {
+        "language": "Newari",
+        "abbreviation": "new"
+    },
+    {
+        "language": "Goan Konkani",
+        "abbreviation": "gom"
+    },
+    {
+        "language": "Uighur",
+        "abbreviation": "uig"
+    }
+]
