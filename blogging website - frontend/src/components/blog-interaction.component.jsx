@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "../App";
 import { BlogContext } from "../pages/blog.page";
@@ -7,25 +7,11 @@ import axios from "axios";
 
 const BlogInteraction = () => {
 
-    let {blog ,blog: {_id, title, blog_id, activity, activity: {total_likes, total_comments}, author: {personal_info: {username: author_username}}}, setBlog, isLikedByUser, setIsLikedByUser,  setCommentsWrapper} = useContext(BlogContext);
+    let {blog ,blog: {_id, title, blog_id, activity, activity: {total_likes, total_comments}, author: {personal_info: {username: author_username}}}, setBlog, isLikedByUser, setIsLikedByUser,  setCommentsWrapper, setSendMessageWrapper} = useContext(BlogContext);
 
     let {userAuth: {username, access_token}} = useContext(UserContext);
 
-    useEffect(() => {
-        if(access_token) {
-            // make request to server to get like information
-            axios.post(import.meta.env.VITE_SERVER_DOMAIN + '/blog/isliked-by-user', {_id}, {
-                headers: {'Authorization': `Bearer ${access_token}`}
-            })
-            .then(({data: {result}}) => {
-                setIsLikedByUser(Boolean(result));
-            })
-            .catch(err => {
-                console.log(err);
-            })
-        }
-
-    })
+    
 
     const handleLike = () => {
 
@@ -53,6 +39,22 @@ const BlogInteraction = () => {
         }
 
     }
+
+    useEffect(() => {
+        if(access_token) {
+            // make request to server to get like information
+            axios.post(import.meta.env.VITE_SERVER_DOMAIN + '/blog/isliked-by-user', {_id}, {
+                headers: {'Authorization': `Bearer ${access_token}`}
+            })
+            .then(({data: {result}}) => {
+                setIsLikedByUser(Boolean(result));
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        }
+
+    }, [])
 
 
     return (
@@ -83,7 +85,7 @@ const BlogInteraction = () => {
 
                         {
                             username == author_username ?
-                            <Link to={`/editor/${blog_id}`}  className="underline hover:text-purple">Edit</Link> : <Link to={`/chatting}`}className="underline hover:text-purple">Send Message</Link>
+                            <Link to={`/editor/${blog_id}`}  className="underline hover:text-purple">Edit</Link> : <button onClick={() => setSendMessageWrapper(preVal => !preVal)} className="underline hover:text-purple">Send Message</button>
                         }
 
                         <Link target="_blank" to={`https://twitter.com/intent/tweet?text=Read ${title}$url=${location.href}`}><i className="fi fi-brands-twitter hover:text-twitter"></i></Link>
