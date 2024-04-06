@@ -139,3 +139,17 @@ input::-ms-reveal,
 input::-ms-clear {
     display: none;
 }
+
+
+.ocr-scroll-class::-webkit-scrollbar {
+    width: 6px; /* Adjust the width of the scrollbar */
+  }
+  
+  .ocr-scroll-class::-webkit-scrollbar-thumb {
+    background: transparent; /* Match with background color */
+  }
+  
+  /* Style the scrollbar for IE, Edge, and Firefox */
+  .ocr-scroll-class {
+    scrollbar-color: #E7E7E7 transparent; /* Background and track color */
+  }

@@ -153,30 +153,38 @@ const OCRForm = () => {
                             </button>
 
                             {isOpen && (
-                                <ul className={(theme == "light" ? "bg-grey" : "bg-slate-700")+" max-h-40 absolute overflow-y-auto top-20 flex flex-col items-start rounded-lg p-2 w-full"}>
-                                    <div className="flex items-center px-2 sticky top-0">
-                                        <AiOutlineSearch size={18} className="text-grey-900 "/>
-                                        <input 
-                                            type="text" 
-                                            value={inputValue}
-                                            placeholder="Enter a language" 
-                                            onChange={(e) => {setInputValue(e.target.value.toLowerCase())}}
-                                            className={"w-[270px] placeholder:text-grey-700 p-2 outline-none " + (theme == "light" ? "bg-grey" : "bg-slate-700")}/>
-                                    </div>
-                                    {langugeList.map((lang, idx) => (
-                                        <div className="flex w-full justify-between hover:bg-gray-400 cursor-pointer rounded-r-lg border-l-transparent hover:border-l-white border-l-4" key={idx}>
-                                            <li 
-                                                key={lang?.language} 
-                                                onClick={() => {
-                                                    setSelectedLanguage(lang); 
-                                                    setIsOpen(false);
-                                                    setInputValue("");
-                                                }}
-                                                className={`font-bold p-1 ${lang?.language?.toLowerCase().startsWith(inputValue) ? "block" : "hidden"}`}>{lang?.language}
-                                            </li>
+                                <div className={(theme == "light" ? "bg-grey" : "bg-slate-700")+" absolute top-full mt-3 rounded-md w-full z-20"}>
+                                    <div>
+                                        <div className={"flex items-center sticky px-2 rounded-t-xl top-0 z-10 " + (theme == "light" ? "bg-grey" : "bg-slate-700")}> 
+                                            <AiOutlineSearch size={18} className="text-grey-900"/>
+                                            <input 
+                                                type="text" 
+                                                value={inputValue}
+                                                placeholder="Enter a language" 
+                                                onChange={(e) => {setInputValue(e.target.value.toLowerCase())}}
+                                                className={"w-[260px] placeholder:text-grey-700 p-2 outline-none bg-transparent" }/>
                                         </div>
-                                    ))} 
-                                </ul>
+                                        <ul className="max-h-40 overflow-y-auto flex flex-col items-start rounded-md w-full ocr-scroll-class">
+                                            {langugeList.filter(lang => lang.language.toLowerCase().startsWith(inputValue)).map((lang, idx) => (
+                                                <div className="flex w-full justify-between hover:bg-gray-400 cursor-pointer rounded-r-lg border-l-transparent hover:border-l-white border-l-4" key={idx}>
+                                                    <div 
+                                                        key={lang?.language} 
+                                                        onClick={() => {
+                                                            setSelectedLanguage(lang); 
+                                                            setIsOpen(false);
+                                                            setInputValue("");
+                                                        }}
+                                                        className="flex w-full justify-between hover:bg-grey-400 cursor-pointer rounded-r-lg border-l-transparent hover:border-l-white border-l-4 p-1"
+                                                        >
+                                                        <span className="font bold block">
+                                                            {lang?.language}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            ))} 
+                                        </ul>
+                                    </div>
+                                </div>  
                             )}
                         </div>
                  
